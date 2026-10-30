@@ -76,7 +76,7 @@
 | A2   | Average load | 3     | 1.35  | 369.80 ms | 470.11 ms | 0.00%  | 100.00% (328/328) |
 | A3   | Stress       | 5     | 2.13  | 378.14 ms | 412.11 ms | 0.00%  | 100.00% (520/520) |
 | A4   | Spike        | 5     | 1.05  | 356.09 ms | 377.50 ms | 0.00%  | 100.00% (196/196) |
-| A5   | Soak         | 2     |       |           |           |        |                   |
+| A5   | Soak         | 2     | 1.00  | 373.69 ms | 455.61 ms | 0.00%  | 100.00% (880/880) |
 
 ### Step A4, spike
 - Timeline: 1 user until 30 s, jump to 5 users at 30–35 s, hold until 65 s, back to 1 user at 70 s.
@@ -96,6 +96,21 @@
 - Two small bumps in the chart are not caused by the spike:
   - The dip at about 21:54:10 is the drop from 5 to 1 users, when few requests fell in that window.
   - The rise at the end (avg about 321 ms in 130–140 s) happened with only 1 user during the ramp down, so it is ordinary internet noise.
+
+### Step A5, soak
+- 2 users for 11 minutes in total (30 s up, 10 min hold, 30 s down), 660 requests, exit code 0, all thresholds passed.
+- First minutes compared with last minutes (computed from a CSV export of the same run, `--out csv`):
+
+  | Period | Requests | Avg | Median | p(95) | Max | Failed |
+  | ------ | -------- | --- | ------ | ----- | --- | ------ |
+  | First 3 min (0–3) | 169 | 292 ms | 270 ms | 374 ms | 456 ms | 0.00% |
+  | Last 3 min (8–11) | 178 | 294 ms | 271 ms | 380 ms | 400 ms | 0.00% |
+
+- Per minute, avg stayed between 288 and 295 ms and p(95) between 347 and 385 ms, with no upward trend.
+- **Did the response time or the error rate get worse as the test went on?** No.
+  - Avg and median moved by only about 1–2 ms, and p(95) by about 5 ms, which is within the normal minute-to-minute noise.
+  - The error rate was 0.00% in every minute.
+  - The highest single request (456 ms) was in the first minute, not near the end.
 
 ## Part B
 1.
